@@ -21,7 +21,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+      <body className="flex min-h-screen flex-col bg-slate-50 text-slate-900 antialiased">
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-5xl px-6 py-5">
             <h1 className="text-xl font-semibold tracking-tight">
@@ -29,7 +29,20 @@ export default function RootLayout({
             </h1>
           </div>
         </header>
-        <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">{children}</main>
+        <footer className="border-t border-slate-200 bg-white">
+          <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; 2026 CRS Scoring. Not legal advice.</p>
+            <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <a href="/privacy" className="hover:text-slate-900">Privacy</a>
+              <a href="/terms" className="hover:text-slate-900">Terms</a>
+              <a href="/contact" className="hover:text-slate-900">Contact</a>
+              <a href="mailto:feedback@crsscoring.com" className="hover:text-slate-900">
+                feedback@crsscoring.com
+              </a>
+            </nav>
+          </div>
+        </footer>
         <CookieConsentBanner />
       </body>
     </html>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { getSupabase } from "@/lib/supabase";
 import type { CRSBreakdown } from "@/lib/crs";
 
 export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdown }) {
@@ -31,16 +30,20 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
     setError(null);
 
     try {
-      const { error: supabaseError } = await getSupabase().from("leads").insert({
-        email: cleaned,
-        crs_score: breakdown.total,
-        score_breakdown: breakdown,
-        terms_accepted: termsAccepted,
-        consultant_consent: consultantConsent,
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: cleaned,
+          breakdown,
+          termsAccepted,
+          consultantConsent,
+        }),
       });
 
-      if (supabaseError && supabaseError.code !== "23505") {
-        setError(supabaseError.message);
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(payload.error ?? `Submission failed (${res.status}).`);
         setStatus("error");
         return;
       }
@@ -88,6 +91,20 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
             {status === "submitting" ? "Saving…" : "Get draw alerts"}
           </button>
         </div>
+
+        <p className="text-xs text-sky-800">
+          Your information is collected under our{" "}
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline hover:text-sky-900"
+          >
+            Privacy Policy
+          </a>{" "}
+          and used to send draw alerts and, with your consent, connect you with
+          immigration professionals.
+        </p>
 
         <label className="flex items-start gap-2 text-sm text-sky-900">
           <input
