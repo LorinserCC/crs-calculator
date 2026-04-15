@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({
           </div>
         </header>
         <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+        <CookieConsentBanner />
       </body>
     </html>
   );
