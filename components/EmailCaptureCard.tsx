@@ -52,8 +52,8 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+    <div className="rounded-xl border-2 border-sky-300 bg-sky-50 p-5 shadow-sm sm:p-6">
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-sky-900">
         Get notified when the draw cutoff drops to your score range
       </h3>
       <form onSubmit={onSubmit} className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -63,18 +63,18 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+          className="w-full flex-1 rounded-md border border-sky-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
           disabled={status === "submitting"}
         />
         <button
           type="submit"
           disabled={status === "submitting" || !email}
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 disabled:opacity-50"
+          className="rounded-md bg-sky-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sky-800 disabled:opacity-50"
         >
           {status === "submitting" ? "Saving…" : "Notify me"}
         </button>
       </form>
-      {error ? <p className="mt-2 text-xs text-rose-600">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-rose-700">{error}</p> : null}
     </div>
   );
 }
