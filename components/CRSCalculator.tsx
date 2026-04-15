@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import DrawHistoryChart from "./DrawHistoryChart";
+import EmailCaptureCard from "./EmailCaptureCard";
 import {
   ABILITIES,
   EDUCATION_LABELS,
@@ -603,6 +604,8 @@ function ResultView({
       </div>
 
       <ExplanationCard breakdown={breakdown} />
+
+      <EmailCaptureCard breakdown={breakdown} />
 
       <DrawHistoryChart userScore={breakdown.total} />
 
