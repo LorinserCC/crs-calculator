@@ -52,28 +52,33 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
   }
 
   return (
-    <div className="rounded-xl border-2 border-sky-300 bg-sky-50 p-5 shadow-sm sm:p-6">
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-sky-900">
-        Get notified when the draw cutoff drops to your score range
+    <div className="rounded-xl border-2 border-sky-400 bg-sky-100 p-6 shadow-sm sm:p-8">
+      <h3 className="text-lg font-bold leading-snug text-sky-950 sm:text-xl">
+        <span aria-hidden="true" className="mr-2">🔔</span>
+        Don&apos;t miss your draw — get notified the moment the cutoff reaches your score
       </h3>
-      <form onSubmit={onSubmit} className="mt-3 flex flex-col gap-2 sm:flex-row">
+      <p className="mt-2 text-sm text-sky-800">
+        Join thousands of Express Entry candidates tracking their score.
+      </p>
+      <form onSubmit={onSubmit} className="mt-5 flex flex-col gap-3 sm:flex-row">
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full flex-1 rounded-md border border-sky-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-600 focus:outline-none focus:ring-1 focus:ring-sky-600"
+          className="w-full flex-1 rounded-md border border-sky-400 bg-white px-4 py-3 text-base text-slate-900 shadow-sm focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-600"
           disabled={status === "submitting"}
         />
         <button
           type="submit"
           disabled={status === "submitting" || !email}
-          className="rounded-md bg-sky-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sky-800 disabled:opacity-50"
+          className="rounded-md bg-sky-700 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-sky-800 disabled:opacity-50 sm:px-8"
         >
           {status === "submitting" ? "Saving…" : "Notify me"}
         </button>
       </form>
+      <p className="mt-3 text-xs text-sky-700">No spam. Unsubscribe anytime.</p>
       {error ? <p className="mt-2 text-xs text-rose-700">{error}</p> : null}
     </div>
   );
