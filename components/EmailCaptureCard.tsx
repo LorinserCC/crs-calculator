@@ -144,8 +144,7 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
             className="mt-0.5 h-4 w-4 rounded border-sky-400 text-sky-700 focus:ring-sky-600"
           />
           <span>
-            Connect me with an immigration expert who can help get my score where it
-            needs to be.
+            Help me close the gap — match me with an expert who knows my score.
           </span>
         </label>
       </form>
