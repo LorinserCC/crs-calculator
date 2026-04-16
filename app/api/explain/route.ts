@@ -3,6 +3,22 @@ import type { CRSBreakdown } from "@/lib/crs";
 
 export const runtime = "nodejs";
 
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now > bucket.resetAt) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+  if (bucket.count >= RATE_LIMIT) return false;
+  bucket.count += 1;
+  return true;
+}
+
 const SYSTEM_PROMPT = `You are an assistant that helps prospective immigrants understand their Canada Express Entry CRS (Comprehensive Ranking System) score.
 
 You will be given the user's CRS score breakdown by category and the current Express Entry draw cutoff.
@@ -19,6 +35,15 @@ IMPORTANT: As of March 25, 2025, IRCC removed all CRS points for arranged employ
 Keep the tone friendly, encouraging, and practical. Use short paragraphs. Keep total length around 220–320 words. Do not use markdown headings.`;
 
 export async function POST(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for") ?? "";
+  const ip = forwarded.split(",")[0].trim() || "unknown";
+  if (!checkRateLimit(ip)) {
+    return new Response(
+      "You\u2019ve requested several analyses in a short time. Please wait a few minutes before trying again.",
+      { status: 429, headers: { "Content-Type": "text/plain; charset=utf-8" } },
+    );
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response("ANTHROPIC_API_KEY is not set on the server.", { status: 500 });
   }

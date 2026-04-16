@@ -563,9 +563,20 @@ function Section({
   );
 }
 
+function SkeletonLines() {
+  return (
+    <div className="space-y-3">
+      <div className="h-3 w-full animate-pulse rounded bg-slate-200" />
+      <div className="h-3 w-11/12 animate-pulse rounded bg-slate-200" />
+      <div className="h-3 w-9/12 animate-pulse rounded bg-slate-200" />
+      <p className="mt-2 text-xs text-slate-400">Analyzing your profile…</p>
+    </div>
+  );
+}
+
 function ExplanationCard({ breakdown }: { breakdown: CRSBreakdown }) {
   const [text, setText] = useState("");
-  const [status, setStatus] = useState<"loading" | "streaming" | "done" | "error">(
+  const [status, setStatus] = useState<"loading" | "streaming" | "done" | "error" | "rate-limited">(
     "loading",
   );
   const [error, setError] = useState<string | null>(null);
@@ -584,6 +595,12 @@ function ExplanationCard({ breakdown }: { breakdown: CRSBreakdown }) {
           }),
           signal: controller.signal,
         });
+
+        if (res.status === 429) {
+          setError((await res.text()) || "Rate limited.");
+          setStatus("rate-limited");
+          return;
+        }
 
         if (!res.ok || !res.body) {
           throw new Error((await res.text()) || `Request failed (${res.status})`);
@@ -609,16 +626,15 @@ function ExplanationCard({ breakdown }: { breakdown: CRSBreakdown }) {
     return () => controller.abort();
   }, [breakdown]);
 
+  const showSkeleton = status === "loading" || (status === "streaming" && !text);
+
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
           What this means
         </h3>
-        {status === "loading" ? (
-          <span className="text-xs text-slate-400">Thinking…</span>
-        ) : null}
-        {status === "streaming" ? (
+        {status === "streaming" && text ? (
           <span className="flex items-center gap-1.5 text-xs text-slate-500">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Streaming
@@ -626,16 +642,16 @@ function ExplanationCard({ breakdown }: { breakdown: CRSBreakdown }) {
         ) : null}
       </div>
 
-      {error ? (
-        <p className="text-sm text-rose-600">Could not load explanation: {error}</p>
-      ) : (
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
-          {text ? (
-            text
-          ) : (
-            <span className="text-slate-400">Analyzing your score…</span>
-          )}
+      {status === "rate-limited" ? (
+        <p className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          {error}
         </p>
+      ) : status === "error" ? (
+        <p className="text-sm text-rose-600">Could not load explanation: {error}</p>
+      ) : showSkeleton ? (
+        <SkeletonLines />
+      ) : (
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">{text}</p>
       )}
 
       <p className="mt-4 border-t border-slate-100 pt-3 text-xs text-slate-400">
