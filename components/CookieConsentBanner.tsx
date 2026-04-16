@@ -2,17 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "crsscoring-cookie-consent";
+const STORAGE_KEY = "cookie_consent";
 
 export default function CookieConsentBanner() {
-  const [visible, setVisible] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(STORAGE_KEY)) setVisible(true);
+      if (localStorage.getItem(STORAGE_KEY)) setHidden(true);
     } catch {
-      // localStorage unavailable — show once per page load
-      setVisible(true);
+      // localStorage unavailable — keep banner visible
     }
   }, []);
 
@@ -22,10 +21,10 @@ export default function CookieConsentBanner() {
     } catch {
       // ignore
     }
-    setVisible(false);
+    setHidden(true);
   }
 
-  if (!visible) return null;
+  if (hidden) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white shadow-lg">
