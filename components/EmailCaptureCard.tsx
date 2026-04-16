@@ -144,17 +144,8 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
             className="mt-0.5 h-4 w-4 rounded border-sky-400 text-sky-700 focus:ring-sky-600"
           />
           <span>
-            I consent to be contacted by a licensed immigration expert about my
-            application. (See{" "}
-            <a
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium underline hover:text-sky-700"
-            >
-              Privacy Policy
-            </a>
-            )
+            Connect me with an immigration expert who can help get my score where it
+            needs to be.
           </span>
         </label>
       </form>
