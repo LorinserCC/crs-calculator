@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DrawHistoryChart from "./DrawHistoryChart";
 import EmailCaptureCard from "./EmailCaptureCard";
 import {
@@ -37,19 +37,88 @@ function Field({ label, children, hint }: { label: string; children: React.React
   );
 }
 
+function classifyLangValue(
+  value: string,
+  test: LangTest,
+): "complete" | "incomplete" | "invalid" {
+  if (value === "") return "incomplete";
+  if (test === "IELTS") {
+    if (value === "9") return "complete";
+    if (/^[1-9]\.[05]$/.test(value)) return "complete";
+    if (/^[1-9]$/.test(value)) return "incomplete";
+    if (/^[1-9]\.$/.test(value)) return "incomplete";
+    return "invalid";
+  }
+  if (/^(1[012]|[2-9])$/.test(value)) return "complete";
+  if (value === "1") return "incomplete";
+  return "invalid";
+}
+
 function LangInputs({
   test,
   scores,
   onTestChange,
   onScoreChange,
+  onGroupComplete,
 }: {
   test: LangTest;
   scores: Record<Ability, number>;
   onTestChange: (t: LangTest) => void;
   onScoreChange: (a: Ability, v: number) => void;
+  onGroupComplete?: () => void;
 }) {
   const step = test === "IELTS" ? 0.5 : 1;
   const max = test === "IELTS" ? 9 : 12;
+  const [raw, setRaw] = useState<Record<Ability, string>>(() => ({
+    listening: scores.listening ? String(scores.listening) : "",
+    speaking: scores.speaking ? String(scores.speaking) : "",
+    reading: scores.reading ? String(scores.reading) : "",
+    writing: scores.writing ? String(scores.writing) : "",
+  }));
+  const [invalid, setInvalid] = useState<Record<Ability, boolean>>({
+    listening: false,
+    speaking: false,
+    reading: false,
+    writing: false,
+  });
+  const refs = useRef<Record<Ability, HTMLInputElement | null>>({
+    listening: null,
+    speaking: null,
+    reading: null,
+    writing: null,
+  });
+
+  function advance(idx: number) {
+    const next = ABILITIES[idx + 1];
+    if (next) {
+      const el = refs.current[next];
+      el?.focus();
+      el?.select();
+    } else {
+      onGroupComplete?.();
+    }
+  }
+
+  function handleChange(a: Ability, idx: number, value: string) {
+    setRaw((prev) => ({ ...prev, [a]: value }));
+    const state = classifyLangValue(value, test);
+    setInvalid((prev) => ({ ...prev, [a]: state === "invalid" }));
+    onScoreChange(a, parseFloat(value) || 0);
+    if (state === "complete") advance(idx);
+  }
+
+  function handleKeyDown(
+    a: Ability,
+    idx: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const state = classifyLangValue(raw[a], test);
+      if (state !== "invalid") advance(idx);
+    }
+  }
+
   return (
     <div className="space-y-3">
       <Field label="Test">
@@ -63,17 +132,25 @@ function LangInputs({
         </select>
       </Field>
       <div className="grid grid-cols-2 gap-3">
-        {ABILITIES.map((a) => (
+        {ABILITIES.map((a, idx) => (
           <Field key={a} label={a[0].toUpperCase() + a.slice(1)}>
             <input
+              ref={(el) => {
+                refs.current[a] = el;
+              }}
               type="number"
               inputMode="decimal"
               step={step}
               min={0}
               max={max}
-              className={inputClass}
-              value={scores[a] || ""}
-              onChange={(e) => onScoreChange(a, parseFloat(e.target.value) || 0)}
+              className={`${inputClass} ${
+                invalid[a]
+                  ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
+                  : ""
+              }`}
+              value={raw[a]}
+              onChange={(e) => handleChange(a, idx, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(a, idx, e)}
             />
           </Field>
         ))}
@@ -122,6 +199,8 @@ export default function CRSCalculator() {
   const [step, setStep] = useState(1);
   const [input, setInput] = useState<CRSInput>(INITIAL_INPUT);
   const [submitted, setSubmitted] = useState(false);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
+  const focusNext = () => nextButtonRef.current?.focus();
 
   const breakdown = useMemo(() => calculateCRS(input), [input]);
 
@@ -162,8 +241,8 @@ export default function CRSCalculator() {
     <div className="space-y-6">
       <StepIndicator current={step} />
       <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        {step === 1 ? <CoreStep input={input} update={update} /> : null}
-        {step === 2 ? <SpouseStep input={input} update={update} /> : null}
+        {step === 1 ? <CoreStep input={input} update={update} focusNext={focusNext} /> : null}
+        {step === 2 ? <SpouseStep input={input} update={update} focusNext={focusNext} /> : null}
         {step === 3 ? <WorkStep input={input} update={update} /> : null}
         {step === 4 ? <AdditionalStep input={input} update={update} /> : null}
       </div>
@@ -177,6 +256,7 @@ export default function CRSCalculator() {
           Back
         </button>
         <button
+          ref={nextButtonRef}
           type="button"
           onClick={next}
           className="rounded-md bg-slate-900 px-5 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800"
@@ -191,9 +271,10 @@ export default function CRSCalculator() {
 type StepProps = {
   input: CRSInput;
   update: <K extends keyof CRSInput>(k: K, v: CRSInput[K]) => void;
+  focusNext?: () => void;
 };
 
-function CoreStep({ input, update }: StepProps) {
+function CoreStep({ input, update, focusNext }: StepProps) {
   const setFirstScore = (a: Ability, v: number) =>
     update("firstLang", { ...input.firstLang, [a]: v });
   const setSecondScore = (a: Ability, v: number) =>
@@ -267,6 +348,7 @@ function CoreStep({ input, update }: StepProps) {
           scores={input.firstLang}
           onTestChange={(t) => update("firstLangTest", t)}
           onScoreChange={setFirstScore}
+          onGroupComplete={focusNext}
         />
       </div>
 
@@ -286,6 +368,7 @@ function CoreStep({ input, update }: StepProps) {
             scores={input.secondLang}
             onTestChange={(t) => update("secondLangTest", t)}
             onScoreChange={setSecondScore}
+            onGroupComplete={focusNext}
           />
         ) : null}
       </div>
@@ -293,7 +376,7 @@ function CoreStep({ input, update }: StepProps) {
   );
 }
 
-function SpouseStep({ input, update }: StepProps) {
+function SpouseStep({ input, update, focusNext }: StepProps) {
   const setLang = (a: Ability, v: number) =>
     update("spouseLang", { ...input.spouseLang, [a]: v });
 
@@ -326,6 +409,7 @@ function SpouseStep({ input, update }: StepProps) {
           scores={input.spouseLang}
           onTestChange={(t) => update("spouseLangTest", t)}
           onScoreChange={setLang}
+          onGroupComplete={focusNext}
         />
       </div>
 

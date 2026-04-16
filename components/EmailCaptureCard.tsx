@@ -9,6 +9,7 @@ function scoreMessage(score: number) {
   const gap = CUTOFF - score;
   if (gap <= 0) {
     return {
+      headline: "A draw could invite you any time — stay ready",
       color: "text-emerald-700",
       body: (
         <>
@@ -20,6 +21,7 @@ function scoreMessage(score: number) {
   }
   if (gap <= 50) {
     return {
+      headline: "You're close — here's how to close the gap faster",
       color: "text-amber-700",
       body: (
         <>
@@ -31,6 +33,7 @@ function scoreMessage(score: number) {
   }
   if (gap <= 150) {
     return {
+      headline: "Don't wait for the cutoff to drop — close the gap instead",
       color: "text-orange-700",
       body: (
         <>
@@ -42,6 +45,7 @@ function scoreMessage(score: number) {
     };
   }
   return {
+    headline: "Waiting won't get you to Canada — building a stronger profile will",
     color: "text-rose-700",
     body: (
       <>
@@ -59,7 +63,7 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const { color, body } = scoreMessage(breakdown.total);
+  const { headline, color, body } = scoreMessage(breakdown.total);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -118,7 +122,7 @@ export default function EmailCaptureCard({ breakdown }: { breakdown: CRSBreakdow
     <div className="rounded-xl border-2 border-sky-400 bg-sky-100 p-6 shadow-sm sm:p-8">
       <h3 className="text-lg font-bold leading-snug text-sky-950 sm:text-xl">
         <span aria-hidden="true" className="mr-2">🔔</span>
-        Don&apos;t miss your draw — get notified the moment the cutoff reaches your score
+        {headline}
       </h3>
       <p className="mt-2 text-sm text-sky-800">
         Free. No account needed. Unsubscribe anytime.
