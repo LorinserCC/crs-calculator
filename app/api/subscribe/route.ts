@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import type { CRSBreakdown } from "@/lib/crs";
+import { signUnsubscribeToken } from "@/lib/unsubscribe-token";
 
 export const runtime = "nodejs";
 
@@ -16,7 +17,12 @@ const FROM = "CRS Scoring <noreply@crsscoring.com>";
 const CONTACT_EMAIL = "feedback@crsscoring.com";
 
 function unsubscribeLink(email: string) {
-  return `mailto:unsubscribe@crsscoring.com?subject=Unsubscribe%20${encodeURIComponent(email)}`;
+  const secret = process.env.UNSUBSCRIBE_SECRET;
+  if (!secret) {
+    return `${SITE_URL}/unsubscribed?status=error`;
+  }
+  const token = signUnsubscribeToken(email, secret);
+  return `${SITE_URL}/api/unsubscribe?token=${token}`;
 }
 
 function confirmationBody(email: string) {
