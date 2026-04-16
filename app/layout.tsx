@@ -37,6 +37,9 @@ export default function RootLayout({
               <a href="/privacy" className="hover:text-slate-900">Privacy</a>
               <a href="/terms" className="hover:text-slate-900">Terms</a>
               <a href="/contact" className="hover:text-slate-900">Contact</a>
+              <a href="/unsubscribe" className="hover:text-slate-900">
+                Unsubscribe from emails
+              </a>
               <a href="mailto:feedback@crsscoring.com" className="hover:text-slate-900">
                 feedback@crsscoring.com
               </a>
