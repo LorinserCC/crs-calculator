@@ -35,8 +35,8 @@ What you'll receive: Notifications when Express Entry draw cutoffs change, relev
 To unsubscribe at any time, click here: ${unsubscribeLink(email)}
 
 CRS Scoring
-${CONTACT_EMAIL}
-[MAILING ADDRESS PLACEHOLDER]`;
+${feedback@crsscoring.com}
+2909 Washington Rd, Unit 12-200, Parlin, NJ - 08859`;
 }
 
 export async function POST(req: Request) {

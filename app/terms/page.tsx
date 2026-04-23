@@ -404,7 +404,7 @@ export default function TermsPage() {
         <br />
         <strong>Operator:</strong> Lourenco Couto Costa
         <br />
-        <strong>Mailing Address:</strong> [YOUR MAILING ADDRESS]
+        <strong>Mailing Address:</strong> 2909 Washington Rd, Unit 12-200, Parlin, NJ - 08859 
       </p>
     </article>
   );

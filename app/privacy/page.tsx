@@ -494,8 +494,7 @@ export default function PrivacyPage() {
         <br />
         <strong>Operator:</strong> Lourenco Couto Costa
         <br />
-        <strong>Mailing Address:</strong> [YOUR ADDRESS — required for CASL and GDPR
-        compliance]
+        <strong>Mailing Address:</strong> 2909 Washington Rd, Unit 12-200, Parlin, NJ - 08859
       </p>
       <p>
         If you are an EEA resident and are not satisfied with our response, you have the

@@ -16,7 +16,7 @@ export default function ContactPage() {
         <a href="mailto:privacy@crsscoring.com">privacy@crsscoring.com</a>
       </p>
       <p>
-        <strong>Mailing address:</strong> [PLACEHOLDER — will be updated with PO Box]
+        <strong>Mailing address:</strong> 2909 Washington Rd, Parlin, NJ - 08859
       </p>
       <p>
         <strong>Response time:</strong> We respond to all inquiries within 2 business
