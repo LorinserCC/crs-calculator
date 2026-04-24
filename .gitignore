@@ -6,3 +6,6 @@ out
 .env*.local
 next-env.d.ts
 .claude/
+
+# Sentry Config File
+.env.sentry-build-plugin
