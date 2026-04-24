@@ -34,6 +34,10 @@ What you'll receive: Notifications when Express Entry draw cutoffs change, relev
 
 To unsubscribe at any time, click here: ${unsubscribeLink(email)}
 
+---
+
+⚠️ Educational estimate only. This is not immigration advice. Always verify with the official IRCC calculator.
+
 CRS Scoring
 feedback@crsscoring.com
 2909 Washington Rd, Unit 12-200, Parlin, NJ - 08859`;
