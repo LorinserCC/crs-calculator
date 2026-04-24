@@ -102,6 +102,9 @@ Write the explanation now, following your instructions.`;
             controller.enqueue(encoder.encode(event.delta.text));
           }
         }
+      // Add disclaimer at the end of every AI response
+        const disclaimer = `\n\n---\n\n⚠️ **Educational Estimate Only**\n\nThis analysis is based on publicly available IRCC criteria and is NOT immigration advice. It is not a substitute for consulting with a licensed Canadian immigration consultant (RCIC) or immigration lawyer. CRS Scoring does not represent applicants before IRCC. Always verify your score with the official IRCC calculator at https://www.canada.ca/en/immigration-refugees-citizenship/services/come-canada/express-entry/eligibility/criteria-comprehensive-ranking-system/grid.html\n\nLast formula verification: April 2026`;
+        controller.enqueue(encoder.encode(disclaimer));  
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
         controller.enqueue(encoder.encode(`\n\n[Error: ${message}]`));
