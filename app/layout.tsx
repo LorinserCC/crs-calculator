@@ -56,7 +56,7 @@ export default function RootLayout({
             <img 
               src="/CRSlogo.png" 
               alt="CRS Scoring Logo" 
-              className="h-20 w-auto"
+              className="h-28 w-auto"
             />
           </div> 
           </div>
