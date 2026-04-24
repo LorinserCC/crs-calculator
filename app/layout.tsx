@@ -3,8 +3,11 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CRS Score Calculator",
-  description: "Comprehensive Ranking System score calculator",
+  title: "CRS Scoring - Immigration Points Calculator",
+  description: "Comprehensive Ranking System score calculator with AI-powered explanations",
+  icons: {
+    icon: "/CRSfavicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -49,9 +52,13 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col bg-slate-50 text-slate-900 antialiased">
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-5xl px-6 py-5">
-            <h1 className="text-xl font-semibold tracking-tight">
-              CRS Score Calculator
-            </h1>
+           <div className="flex items-center gap-3">
+            <img 
+              src="/CRSlogo.png" 
+              alt="CRS Scoring Logo" 
+              className="h-12 w-auto"
+            />
+          </div> 
           </div>
         </header>
         <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">{children}</main>
