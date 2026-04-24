@@ -58,6 +58,9 @@ export default function RootLayout({
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; 2026 CRS Scoring. Not legal advice.</p>
+            <p className="text-xs text-slate-400 mt-2">
+                ⚠️ Educational estimate only. This is not immigration advice. Always verify with the official IRCC calculator.
+              </p>
             <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
               <a href="/privacy" className="hover:text-slate-900">Privacy</a>
               <a href="/terms" className="hover:text-slate-900">Terms</a>
